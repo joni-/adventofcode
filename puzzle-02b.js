@@ -1,4 +1,9 @@
+const R = require('ramda');
 const test = require('./test');
+
+const splitByRow = R.split('\n');
+const splitByWhitespace = R.split(/\s+/);
+const toNumberList = R.compose(R.map(Number), splitByWhitespace);
 
 const getDivisionResult = (numbers) => {
   for (let i = 0; i < numbers.length; i++) {
@@ -7,8 +12,8 @@ const getDivisionResult = (numbers) => {
         continue;
       }
 
-      const max = Math.max(numbers[i], numbers[j]);
-      const min = Math.min(numbers[i], numbers[j]);
+      const max = R.max(numbers[i], numbers[j]);
+      const min = R.min(numbers[i], numbers[j]);
 
       if (max % min === 0) {
         return max / min;
@@ -19,20 +24,11 @@ const getDivisionResult = (numbers) => {
   throw new Error();
 }
 
-const solve = (input) => {
-  const rows = input.split('\n');
-
-  const notEmpty = s => s.trim().length > 0;
-
-  const numbers = rows.map(
-    line => line.split(/\s+/).filter(notEmpty).map(Number)
-  );
-
-  return numbers.reduce(
-    (sum, numbers) => sum + getDivisionResult(numbers),
-    0
-  );
-};
+const solve = R.compose(
+  R.reduce((sum, numbers) => sum + getDivisionResult(numbers), 0),
+  R.map(toNumberList),
+  splitByRow
+);
 
 const testInput = `5 9 2 8
 9 4 7 3

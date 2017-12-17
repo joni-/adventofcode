@@ -1,19 +1,16 @@
+const R = require('ramda');
 const test = require('./test');
 
-const solve = (input) => {
-  const rows = input.split('\n');
+const splitByRow = R.split('\n');
+const splitByWhitespace = R.split(/\s+/);
+const toNumberList = R.compose(R.map(Number), splitByWhitespace);
+const maxMinDifference = (numbers) => Math.max(...numbers) - Math.min(...numbers);
 
-  const notEmpty = s => s.trim().length > 0;
-
-  const numbers = rows.map(
-    line => line.split(/\s+/).filter(notEmpty).map(Number)
-  );
-
-  return numbers.reduce(
-    (sum, numbers) => sum + Math.max(...numbers) - Math.min(...numbers),
-    0
-  );
-};
+const solve = R.compose(
+  R.reduce((sum, numbers) => sum + maxMinDifference(numbers), 0),
+  R.map(toNumberList),
+  splitByRow
+);
 
 const testInput = `5 1   9   5
 7 5   3

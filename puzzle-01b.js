@@ -1,22 +1,25 @@
 const test = require('./test');
+const R = require('ramda');
+
+const moveFirstToLast = R.compose(R.drop(1), R.chain(R.append, R.head))
 
 const solveRecursively = (input, circular, sum) => {
-  if (input.length === 0) {
+  if (R.isEmpty(input)) {
     return sum;
   }
 
-  const firstNumber = input[0];
+  const firstNumber = R.head(input);
   const secondNumber = circular[circular.length / 2];
 
   return solveRecursively(
-    input.slice(1),
-    [...circular.slice(1), firstNumber],
+    R.drop(1, input),
+    moveFirstToLast(circular),
     firstNumber === secondNumber ? sum + firstNumber : sum
   );
 };
 
 const solve = (input) => {
-  const numbers = input.split('').map(Number);
+  const numbers = R.compose(R.map(Number), R.split(''))(input);
   return solveRecursively(numbers, numbers, 0);
 }
 

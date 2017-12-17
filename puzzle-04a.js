@@ -1,14 +1,14 @@
+const R = require('ramda');
 const test = require('./test');
 
+const splitByRow = R.split('\n');
+
 const isValid = (passphrase) => {
-  const parts = passphrase.split(' ');
+  const parts = R.split(' ')(passphrase);
   return parts.length === new Set(parts).size
 };
 
-const solve = (input) => {
-  const lines = input.split('\n');
-  return lines.filter(isValid).length
-};
+const solve = R.compose(R.length, R.filter(isValid), splitByRow);
 
 const testInput = `aa bb cc dd ee
 aa bb cc dd aa
