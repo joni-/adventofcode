@@ -1,33 +1,32 @@
+const R = require('ramda');
 const test = require('./test');
 
-const parseApps = (lines) => lines
-  .map(line => line.split(' '))
-  .reduce((acc, current) => {
-    const parent = current[0];
-    if (!acc[parent]) {
-      acc[parent] = 0;
-    }
+const parentApps = R.map(R.head);
 
-    acc[parent] += 1;
+const childApps = R.compose(
+  R.filter(R.complement(R.isEmpty)),
+  R.map(R.compose(
+    R.map(R.replace(',', '')),
+    R.slice(3, Infinity)
+  ))
+);
 
-    current
-      .slice(3)
-      .map(s => s.replace(',', '').trim())
-      .forEach(c => {
-        if (!acc[c]) {
-          acc[c] = 0;
-        }
-
-        acc[c] += 1;
-      });
-
-      return acc;
-  }, {});
+const findParent = R.compose(
+  R.head,
+  R.find(pair => R.last(pair) === 1),
+  R.toPairs,
+  R.countBy(R.identity),
+  R.flatten,
+  R.converge(
+    R.concat,
+    [parentApps, childApps]
+  ),
+  R.map(R.split(' ')),
+  R.split('\n')
+);
 
 const solve = (input) => {
-  const apps = parseApps(input.split('\n'));
-  const entry = Object.entries(apps).filter(entry => entry[1] === 1)[0];
-  return entry[0];
+  return findParent(input);
 };
 
 const testInput = `pbga (66)
