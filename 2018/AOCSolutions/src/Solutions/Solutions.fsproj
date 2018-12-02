@@ -6,5 +6,7 @@
     <Compile Include="Library.fs" />
     <Compile Include="Puzzle01a.fs" />
     <Compile Include="Puzzle01b.fs" />
+    <Compile Include="Puzzle02a.fs" />
+    <Compile Include="Puzzle02b.fs" />
   </ItemGroup>
 </Project>
