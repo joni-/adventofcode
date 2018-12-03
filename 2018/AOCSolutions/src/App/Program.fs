@@ -13,5 +13,8 @@ module Program = let [<EntryPoint>] main _ =
                   printfn "Puzzle02a: %d" puzzle02aResult
                   let puzzle02bResult = Solutions.Puzzle02b.readFileAndSolve("./src/Solutions/Puzzle02.input")
                   printfn "Puzzle02b: %A" puzzle02bResult
-
+                  let puzzle03aResult = Solutions.Puzzle03a.readFileAndSolve("./src/Solutions/Puzzle03.input")
+                  printfn "Puzzle03a: %A" puzzle03aResult
+                  let puzzle03bResult = Solutions.Puzzle03b.readFileAndSolve("./src/Solutions/Puzzle03.input")
+                  printfn "Puzzle03b: %A" puzzle03bResult
                   0

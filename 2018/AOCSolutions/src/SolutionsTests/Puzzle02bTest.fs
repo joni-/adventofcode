@@ -15,9 +15,3 @@ type Puzzle02bTest () =
                      axcye\n\
                      wvxyz"
         Assert.AreEqual("fgij", Solutions.Puzzle02b.solve(input))
-
-
-
-
-
-

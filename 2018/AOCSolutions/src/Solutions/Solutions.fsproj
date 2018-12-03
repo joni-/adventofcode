@@ -8,5 +8,7 @@
     <Compile Include="Puzzle01b.fs" />
     <Compile Include="Puzzle02a.fs" />
     <Compile Include="Puzzle02b.fs" />
+    <Compile Include="Puzzle03a.fs" />
+    <Compile Include="Puzzle03b.fs" />
   </ItemGroup>
 </Project>
