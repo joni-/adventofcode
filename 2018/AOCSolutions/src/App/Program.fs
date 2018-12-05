@@ -17,4 +17,8 @@ module Program = let [<EntryPoint>] main _ =
                   printfn "Puzzle03a: %A" puzzle03aResult
                   let puzzle03bResult = Solutions.Puzzle03b.readFileAndSolve("./src/Solutions/Puzzle03.input")
                   printfn "Puzzle03b: %A" puzzle03bResult
+                  let puzzle04aResult = Solutions.Puzzle04.readFileAndSolveA("./src/Solutions/Puzzle04.input")
+                  printfn "Puzzle04a: %A" puzzle04aResult
+                  let puzzle04bResult = Solutions.Puzzle04.readFileAndSolveB("./src/Solutions/Puzzle04.input")
+                  printfn "Puzzle04b: %A" puzzle04bResult
                   0

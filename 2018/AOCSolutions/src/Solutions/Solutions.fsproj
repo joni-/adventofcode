@@ -10,5 +10,6 @@
     <Compile Include="Puzzle02b.fs" />
     <Compile Include="Puzzle03a.fs" />
     <Compile Include="Puzzle03b.fs" />
+    <Compile Include="Puzzle04.fs" />
   </ItemGroup>
 </Project>
