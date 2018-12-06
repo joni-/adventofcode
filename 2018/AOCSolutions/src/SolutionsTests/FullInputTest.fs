@@ -47,13 +47,19 @@ type FullInputTest () =
     [<Test>]
     member this.Puzzle04a () =
         let input = "Puzzle04.input" |> readInput
-
-        // Should be just 825
         Assert.AreEqual(26281, Solutions.Puzzle04.solveA(input))
 
     [<Test>]
     member this.Puzzle04b () =
         let input = "Puzzle04.input" |> readInput
-
-        // Should be just 825
         Assert.AreEqual(73001, Solutions.Puzzle04.solveB(input))
+
+    [<Test>]
+    member this.Puzzle05a () =
+        let input = "Puzzle05.input" |> readInput
+        Assert.AreEqual(9900, Solutions.Puzzle05.solveA(input))
+
+    [<Test>]
+    member this.Puzzle05b () =
+        let input = "Puzzle05.input" |> readInput
+        Assert.AreEqual(4992, Solutions.Puzzle05.solveB(input))
