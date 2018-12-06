@@ -17,21 +17,22 @@
 namespace Solutions
 
 module Puzzle02b =
-    let createInfiniteSeq (ids: string[]) = Seq.initInfinite (fun index ->
-      let lookupIDs = Seq.map (fun (s: string) -> s.Remove(index, 1)) ids
-      Seq.countBy id lookupIDs
+    let createLookupTables (ids: string[]) = Seq.initInfinite (fun index ->
+      let idsWithOneCharRemoved = ids |> Seq.map (fun s -> s.Remove(index, 1))
+      Seq.countBy id idsWithOneCharRemoved
     )
 
-    let hasIt (input: seq<string * int>) =
-      Seq.exists (fun (_, count) -> count = 2) input
+    let containsDuplicateID (input: seq<string * int>) =
+      input |> Seq.exists (fun (_, count) -> count = 2)
 
-    let getIt (input: seq<string * int>) =
-      let group = Seq.find (fun (_, count) -> count = 2) input
+    let getDuplicateID (input: seq<string * int>) =
+      let group = input |> Seq.find (fun (_, count) -> count = 2)
       fst group
 
     let solve (input: string) =
-      let ids = input.Split [|'\n'|]
-      let infiniteSeq = createInfiniteSeq(ids)
-
-      let group = Seq.find hasIt infiniteSeq
-      getIt group
+      let ids = input |> Util.splitByRow |> Seq.toArray
+      let duplicateID = ids
+                      |> createLookupTables
+                      |> Seq.find containsDuplicateID
+                      |> getDuplicateID
+      duplicateID

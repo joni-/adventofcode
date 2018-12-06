@@ -35,14 +35,14 @@ type FullInputTest () =
     [<Test>]
     member this.Puzzle03a () =
         let input = "Puzzle03.input" |> readInput
-        Assert.AreEqual(113576, Solutions.Puzzle03a.solve(input))
+        Assert.AreEqual(113576, Solutions.Puzzle03.solveA(input))
 
     [<Test>]
     member this.Puzzle03b () =
         let input = "Puzzle03.input" |> readInput
 
         // Should be just 825
-        Assert.AreEqual("#825 @ 689,535: 23x27", Solutions.Puzzle03b.solve(input))
+        Assert.AreEqual("#825 @ 689,535: 23x27", Solutions.Puzzle03.solveB(input))
 
     [<Test>]
     member this.Puzzle04a () =

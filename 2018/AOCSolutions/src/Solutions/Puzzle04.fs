@@ -68,29 +68,29 @@ module Puzzle04 =
 
         member this.EntryType = entryType
 
-    type GuardLog(id: int, logEntries: seq<LogEntry>) =
+    type GuardSleepStats(id: int, stats: Map<int, int>) =
         member this.Id = id
-        member this.LogEntries = logEntries
+        member this.Stats = stats
 
     let parseTimeStamp(input: string): DateTime =
         let timestampString = input.Substring(1, input.IndexOf("]") - 1)
         let parts = timestampString.Split([|' '|])
-        let dateString = Seq.head parts
-        let timeString = Seq.last parts
+        let dateString = parts |> Seq.head
+        let timeString = parts |> Seq.last
 
-        let dateParts = Seq.toArray (dateString.Split([|'-'|]))
+        let dateParts = dateString.Split([|'-'|]) |> Seq.toArray
         let year = dateParts.[0] |> int
         let month = dateParts.[1] |> int
         let day = dateParts.[2] |> int
 
         let timeParts = timeString.Split([|':'|])
-        let hours = Seq.head timeParts |> int
-        let minutes = Seq.last timeParts |> int
+        let hours = timeParts |> Seq.head |> int
+        let minutes = timeParts |> Seq.last |> int
 
         DateTime(year, month, day, hours, minutes, 0)
 
     let parseLogEntry (input: string): LogEntry =
-        let timestamp = parseTimeStamp(input)
+        let timestamp = input |> parseTimeStamp
         let action = (Seq.last (input.Split([|']'|]))).Trim()
         let entryType = match action with
                         | action when action.Contains("Guard") -> GuardSwitch
@@ -99,8 +99,8 @@ module Puzzle04 =
         LogEntry(timestamp, action, entryType)
 
     let parseAndSortLogs (input: string): seq<LogEntry> =
-        let logEntries = Seq.map parseLogEntry (Seq.map (fun (s: string) -> s.Trim()) (input.Split([|'\n'|])))
-        Seq.sortBy (fun entry -> entry.Timestamp) logEntries
+        let logEntries = Util.splitByRow input |> Seq.map parseLogEntry
+        logEntries |> Seq.sortBy (fun entry -> entry.Timestamp)
 
     let (|ParseRegex|) regex str =
         let m = Regex(regex).Match(str)
@@ -111,22 +111,18 @@ module Puzzle04 =
             | ParseRegex "#\d+" id -> id |> int
 
     let buildGuardLog(logEntries: seq<LogEntry>): Map<int, seq<LogEntry>> =
-        let rec helper(acc: Map<int, seq<LogEntry>>, entriesLeft: seq<LogEntry>): Map<int, seq<LogEntry>> =
+        let rec helper(acc: Map<int, seq<LogEntry>>, entriesLeft: seq<LogEntry>) =
             if Seq.isEmpty entriesLeft then acc
             else
-                let id = parseID (Seq.head entriesLeft).Action
-                let logsWithoutFirstGuardSwitch = Seq.skip 1 entriesLeft
-                let guardEntries = Seq.takeWhile (fun (e: LogEntry) -> e.EntryType <> GuardSwitch) logsWithoutFirstGuardSwitch
-                let newEntries = match acc.TryFind(id) with
-                                    | Some entries -> Seq.append guardEntries entries
-                                    | None -> guardEntries
-                helper(acc.Add(id, newEntries), Seq.skip (Seq.length guardEntries) logsWithoutFirstGuardSwitch)
-
+                let guardId = (Seq.head entriesLeft).Action |> parseID
+                let logsWithoutFirstGuardSwitch = entriesLeft |> Seq.skip 1
+                let currentIntervalLogs = logsWithoutFirstGuardSwitch
+                                        |> Seq.takeWhile (fun e -> e.EntryType <> GuardSwitch)
+                let guardLogs = match acc.TryFind(guardId) with
+                                    | Some existingLogs -> existingLogs |> Seq.append currentIntervalLogs
+                                    | None -> currentIntervalLogs
+                helper(acc.Add(guardId, guardLogs), Seq.skip (Seq.length currentIntervalLogs) logsWithoutFirstGuardSwitch)
         helper(Map.empty, logEntries)
-
-    type GuardSleepStats(id: int, stats: Map<int, int>) =
-        member this.Id = id
-        member this.Stats = stats
 
     let everyOther elements =
         elements
@@ -136,46 +132,52 @@ module Puzzle04 =
     let guardSleepStats (id: int, logEntries: seq<LogEntry>): GuardSleepStats =
         if Seq.isEmpty logEntries then GuardSleepStats(id, Map.empty)
         else
-            let fallAsSleepEntries = everyOther logEntries
-            let wakeupEntries = everyOther (Seq.tail logEntries)
-            let pairs = Seq.zip fallAsSleepEntries wakeupEntries
-            let stats = Seq.fold (fun (acc: Map<int, int>) (a: LogEntry, b: LogEntry) ->
-                            let minutesAsleep: seq<int> = { a.Timestamp.Minute .. b.Timestamp.Minute - 1 }
-                            Seq.fold (fun inner (minute) ->
-                                let newValue = match inner.TryFind(minute) with
-                                                | Some x -> x + 1
-                                                | None -> 1
-                                inner.Add(minute, newValue)
-                            ) acc minutesAsleep
-                        ) Map.empty pairs
-            GuardSleepStats(id, stats)
+            // Assume every other log is fall asleep and every other wakeup
+            let fallAsSleepLogs = everyOther logEntries
+            let wakeupLogs = everyOther (Seq.tail logEntries)
+            let sleepIntervals = Seq.zip fallAsSleepLogs wakeupLogs
+            let minuteStats = Seq.fold (fun (acc: Map<int, int>) (fallAsSleep: LogEntry, wakeup: LogEntry) ->
+                                    let minutesAsleep: seq<int> =
+                                        { fallAsSleep.Timestamp.Minute .. wakeup.Timestamp.Minute - 1 }
+                                    Seq.fold (fun inner (minute) ->
+                                        let count = match inner.TryFind(minute) with
+                                                        | Some x -> x + 1
+                                                        | None -> 1
+                                        inner.Add(minute, count)
+                                    ) acc minutesAsleep
+                                ) Map.empty sleepIntervals
+            GuardSleepStats(id, minuteStats)
 
     let solveA (input: string) =
-        let logEntries = parseAndSortLogs(input)
-        let guardLog = buildGuardLog(logEntries)
-
-        let guardLogSleepIntervals = Seq.map guardSleepStats (Map.toSeq guardLog)
-
-        let mostSleep = Seq.maxBy (fun (i: GuardSleepStats) ->
-                            let values = Seq.map snd (Map.toSeq i.Stats)
-                            Seq.sum values
-                        ) guardLogSleepIntervals
-
-        let mostSleptGuardID = mostSleep.Id
-        let mostSleptMinute = fst (Seq.maxBy (fun (k, v) -> v) (Map.toSeq mostSleep.Stats))
-        mostSleptGuardID * mostSleptMinute
+        let logEntries = input |> parseAndSortLogs
+        let guardLog = logEntries |> buildGuardLog
+        let sleepStats = guardLog |> Map.toSeq |> Seq.map guardSleepStats
+        let guardWithMostSleep = sleepStats
+                                |> Seq.maxBy (fun guardStats ->
+                                    let values = guardStats.Stats
+                                                |> Map.toSeq
+                                                |> Seq.map snd
+                                    Seq.sum values)
+        let mostSleptMinute = guardWithMostSleep.Stats
+                            |> Map.toSeq
+                            |> Seq.maxBy (fun (k, v) -> v)
+                            |> fst
+        guardWithMostSleep.Id * mostSleptMinute
 
     let maxSleepMinute (stats: Map<int, int>): int * int =
-        Seq.maxBy (fun (minute, count) -> count) (Map.toSeq stats)
-
+        stats |> Map.toSeq |> Seq.maxBy (fun (minute, count) -> count)
     let solveB (input: string) =
-        let logEntries = parseAndSortLogs(input)
-        let guardLog = buildGuardLog(logEntries)
-        let guardLogSleepIntervals = Seq.filter (fun (i: GuardSleepStats) -> not (Seq.isEmpty i.Stats)) (Seq.map guardSleepStats (Map.toSeq guardLog))
+        let logEntries = input |> parseAndSortLogs
+        let guardLog = logEntries |> buildGuardLog
+        let sleepStats = guardLog
+                        |> Map.toSeq
+                        |> Seq.map guardSleepStats
+                        |> Seq.filter (fun guardStat -> not (Map.isEmpty guardStat.Stats))
 
         let guardWithMostSleepOnSingleMinute = Seq.maxBy (fun (i: GuardSleepStats) ->
                                                     snd (maxSleepMinute i.Stats)
-                                                ) guardLogSleepIntervals
-        let maxSleep = maxSleepMinute guardWithMostSleepOnSingleMinute.Stats
+                                                ) sleepStats
+        let maxSleep = guardWithMostSleepOnSingleMinute.Stats |> maxSleepMinute
+        let maxSleepMinute = fst maxSleep
 
-        guardWithMostSleepOnSingleMinute.Id * fst maxSleep
+        guardWithMostSleepOnSingleMinute.Id * maxSleepMinute

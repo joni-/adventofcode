@@ -31,13 +31,12 @@ module Puzzle02a =
       let counts = Seq.countBy id input
       Seq.exists (fun (char, count) -> count = n) counts
 
-    let containsLetterTwice (input: string) = containsAnyLetterNTimes(input, 2)
+    let containsLetterTwice input = containsAnyLetterNTimes(input, 2)
 
-    let containsLetterThreeTimes (input: String) = containsAnyLetterNTimes(input, 3)
+    let containsLetterThreeTimes input = containsAnyLetterNTimes(input, 3)
 
     let solve (input: string) =
-      let ids = input.Split [|'\n'|]
-      let twos = Seq.map containsLetterTwice ids |> Seq.filter id |> Seq.length
-      let threes = Seq.map containsLetterThreeTimes ids |> Seq.filter id |> Seq.length
+      let ids = input |> Util.splitByRow
+      let twos = ids |> Seq.map containsLetterTwice |> Seq.filter id |> Seq.length
+      let threes = ids |> Seq.map containsLetterThreeTimes |> Seq.filter id |> Seq.length
       twos * threes
-

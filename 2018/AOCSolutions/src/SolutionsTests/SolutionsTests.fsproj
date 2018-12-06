@@ -11,8 +11,7 @@
     <Compile Include="Puzzle01bTest.fs" />
     <Compile Include="Puzzle02aTest.fs" />
     <Compile Include="Puzzle02bTest.fs" />
-    <Compile Include="Puzzle03aTest.fs" />
-    <Compile Include="Puzzle03bTest.fs" />
+    <Compile Include="Puzzle03Test.fs" />
     <Compile Include="Puzzle04Test.fs" />
     <Compile Include="FullInputTest.fs" />
     <Compile Include="Program.fs" />

@@ -30,6 +30,6 @@ open System
 
 module Puzzle01a =
 
-    let solve (input: string) = input.Trim().Split [|'\n'|]
-                                |> Seq.map (fun s -> s.Trim())
-                                |> Seq.sumBy (fun s -> Int32.Parse(s))
+    let solve (input: string) = input
+                                |> Util.splitByRow
+                                |> Seq.sumBy int

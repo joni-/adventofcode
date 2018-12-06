@@ -24,14 +24,16 @@ namespace Solutions
 open System
 
 module Puzzle01b =
-    let rec iterRec (index: int, frequencies: int[], seen: Set<int>, frequency: int) =
-      if seen.Contains(frequency) then frequency
-      else
-        let head = frequencies.[index % frequencies.Length]
-        iterRec(index + 1, frequencies, seen.Add(frequency), head + frequency)
+    let rec iterRec (index: int, frequencies: int[], seen: Set<int>, previousFreq: int) =
+        if seen.Contains(previousFreq) then previousFreq
+        else
+            let actualIndex = index % (Array.length frequencies)
+            let currentFreq = Array.item actualIndex frequencies
+            iterRec(index + 1, frequencies, seen.Add(previousFreq), currentFreq + previousFreq)
 
     let solve (input: string) =
-        let frequencies = input.Trim().Split [|'\n'|] |> Seq.map (fun s -> Int32.Parse(s.Trim()))
-        let frequencyArray = Seq.toArray frequencies
-        let seenFrequencies = Set.empty.Add(0)
-        iterRec(1, frequencyArray, seenFrequencies, frequencyArray.[0])
+        let frequencies = input
+                        |> Util.splitByRow
+                        |> Seq.map int
+                        |> Seq.toArray
+        iterRec(1, frequencies, Set.empty.Add(0), Array.head frequencies)
