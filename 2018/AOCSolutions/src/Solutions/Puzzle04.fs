@@ -58,9 +58,7 @@
 namespace Solutions
 
 open System
-open System.IO
 open System.Text.RegularExpressions
-
 module Puzzle04 =
     type EntryType = GuardSwitch | FallSleep | Wakeup
 
@@ -181,6 +179,3 @@ module Puzzle04 =
         let maxSleep = maxSleepMinute guardWithMostSleepOnSingleMinute.Stats
 
         guardWithMostSleepOnSingleMinute.Id * fst maxSleep
-
-    let readFileAndSolveA (file: string) = solveA(File.ReadAllText(file))
-    let readFileAndSolveB (file: string) = solveB(File.ReadAllText(file))

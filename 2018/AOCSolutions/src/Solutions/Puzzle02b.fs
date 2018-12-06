@@ -16,9 +16,6 @@
 
 namespace Solutions
 
-open System
-open System.IO
-
 module Puzzle02b =
     let createInfiniteSeq (ids: string[]) = Seq.initInfinite (fun index ->
       let lookupIDs = Seq.map (fun (s: string) -> s.Remove(index, 1)) ids
@@ -38,5 +35,3 @@ module Puzzle02b =
 
       let group = Seq.find hasIt infiniteSeq
       getIt group
-
-    let readFileAndSolve (file: string) = solve(File.ReadAllText(file))

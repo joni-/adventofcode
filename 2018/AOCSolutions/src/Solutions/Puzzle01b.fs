@@ -22,7 +22,6 @@
 namespace Solutions
 
 open System
-open System.IO
 
 module Puzzle01b =
     let rec iterRec (index: int, frequencies: int[], seen: Set<int>, frequency: int) =
@@ -36,5 +35,3 @@ module Puzzle01b =
         let frequencyArray = Seq.toArray frequencies
         let seenFrequencies = Set.empty.Add(0)
         iterRec(1, frequencyArray, seenFrequencies, frequencyArray.[0])
-
-    let readFileAndSolve (file: string) = solve(File.ReadAllText(file))

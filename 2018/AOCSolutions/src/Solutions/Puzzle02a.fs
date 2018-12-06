@@ -25,7 +25,6 @@
 namespace Solutions
 
 open System
-open System.IO
 
 module Puzzle02a =
     let containsAnyLetterNTimes(input: string, n: int) =
@@ -41,4 +40,4 @@ module Puzzle02a =
       let twos = Seq.map containsLetterTwice ids |> Seq.filter id |> Seq.length
       let threes = Seq.map containsLetterThreeTimes ids |> Seq.filter id |> Seq.length
       twos * threes
-    let readFileAndSolve (file: string) = solve(File.ReadAllText(file))
+

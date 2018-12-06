@@ -8,8 +8,6 @@
 namespace Solutions
 
 open System
-open System.IO
-
 module Puzzle03b =
     type Size = int * int
     type Position = int * int
@@ -56,5 +54,3 @@ module Puzzle03b =
                                 ) claimsToPositions
 
       fst nonConflictingClaim
-
-    let readFileAndSolve (file: string) = solve(File.ReadAllText(file))

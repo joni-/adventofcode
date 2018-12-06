@@ -42,8 +42,6 @@
 namespace Solutions
 
 open System
-open System.IO
-
 
 module Puzzle03a =
     type Size = int * int
@@ -85,5 +83,3 @@ module Puzzle03a =
       let countsAtPositions = Seq.fold (fun acc pos -> increaseCount(acc, pos)) Map.empty occupiedPositions
       let conflictingPositions = Map.filter (fun k v -> v > 1) countsAtPositions
       Map.count conflictingPositions
-
-    let readFileAndSolve (file: string) = solve(File.ReadAllText(file))
