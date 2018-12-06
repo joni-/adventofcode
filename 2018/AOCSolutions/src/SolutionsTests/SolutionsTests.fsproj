@@ -14,7 +14,11 @@
     <Compile Include="Puzzle03aTest.fs" />
     <Compile Include="Puzzle03bTest.fs" />
     <Compile Include="Puzzle04Test.fs" />
+    <Compile Include="FullInputTest.fs" />
     <Compile Include="Program.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../Inputs/*" DestinationFolder="$(OutDir)/Inputs" CopyToOutputDirectory="Always" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="nunit" Version="3.10.1" />
