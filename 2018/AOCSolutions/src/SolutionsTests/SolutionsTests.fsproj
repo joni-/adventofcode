@@ -15,6 +15,7 @@
     <Compile Include="Puzzle04Test.fs" />
     <Compile Include="Puzzle05Test.fs" />
     <Compile Include="Puzzle06Test.fs" />
+    <Compile Include="Puzzle07Test.fs" />
     <Compile Include="FullInputTest.fs" />
     <Compile Include="Program.fs" />
     <None Include="../Inputs/*" CopyToOutputDirectory="Always" />

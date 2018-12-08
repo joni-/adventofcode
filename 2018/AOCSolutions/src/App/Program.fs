@@ -31,4 +31,6 @@ module Program = let [<EntryPoint>] main _ =
                   printfn "Puzzle06a: %A" puzzle06aResult
                   let puzzle06bResult = Solutions.Puzzle06.solveB("Puzzle06.input" |> readInput)
                   printfn "Puzzle06b: %A" puzzle06bResult
+                  let puzzle07aResult = Solutions.Puzzle07.solveA("Puzzle07.input" |> readInput)
+                  printfn "Puzzle07a: %A" puzzle07aResult
                   0

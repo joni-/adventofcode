@@ -73,3 +73,8 @@ type FullInputTest () =
     member this.Puzzle06b () =
         let input = "Puzzle06.input" |> readInput
         Assert.AreEqual(36238, Solutions.Puzzle06.solveB(input))
+
+    [<Test>]
+    member this.Puzzle07a () =
+        let input = "Puzzle07.input" |> readInput
+        Assert.AreEqual("ADEFKLBVJQWUXCNGORTMYSIHPZ", Solutions.Puzzle07.solveA(input))
